@@ -1,5 +1,3 @@
-
-
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
@@ -77,7 +75,7 @@ static void print_human_bytes(std::uint64_t bytes)
 int main(int argc, char **argv)
 {
     // Defaults
-    std::size_t N = 10'000'000; // 10M elements ~= 76.3 MB for three vectors of doubles
+    std::size_t N = 10'000'000;
     int iters = 5;
 
     // Very simple CLI parsing
