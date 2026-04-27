@@ -1,0 +1,153 @@
+## Building
+caffeine@fedora:~/docker_assignment$ docker build -t cs-docker-assignment . 2>&1
+[+] Building 49.1s (10/10) FINISHED                       docker:default
+ => [internal] load build definition from Dockerfile                0.1s
+ => => transferring dockerfile: 895B                                0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:22.04     1.6s
+ => [internal] load .dockerignore                                   0.2s
+ => => transferring context: 2B                                     0.0s
+ => [1/5] FROM docker.io/library/ubuntu:22.04@sha256:962f6cadeae0e  4.5s
+ => => resolve docker.io/library/ubuntu:22.04@sha256:962f6cadeae0e  0.2s
+ => => sha256:f63eb04151bcac21ad049f8d781b97b219 29.74MB / 29.74MB  2.5s
+ => => extracting sha256:f63eb04151bcac21ad049f8d781b97b219aba392c  1.6s
+ => [internal] load build context                                   0.3s
+ => => transferring context: 148B                                   0.0s
+ => [2/5] RUN apt-get update && apt-get install -y     git     ly  30.0s
+ => [3/5] WORKDIR /workspace                                        0.3s 
+ => [4/5] RUN git clone https://github.com/mit-pdos/xv6-public.git  2.2s 
+ => [5/5] COPY hello.py .                                           0.2s 
+ => exporting to image                                              9.6s 
+ => => exporting layers                                             6.8s 
+ => => exporting manifest sha256:8647ea67a0c5fe4f65afd96b584649f54  0.0s 
+ => => exporting config sha256:05b3a61d27362c3e4167544bc47bb4dd04f  0.0s
+ => => exporting attestation manifest sha256:25980c3d2176486b91973  0.1s
+ => => exporting manifest list sha256:8d7f39c052c0514d1522d10e0535  0.0s
+ => => naming to docker.io/library/cs-docker-assignment:latest      0.0s
+ => => unpacking to docker.io/library/cs-docker-assignment:latest   2.6s
+
+## Running
+caffeine@fedora:~/docker_assignment$ docker run --rm cs-docker-assignment 2>&1
+Hello World
+My name is Reza Shahwaz
+
+## Lynx Version Verification
+caffeine@fedora:~/docker_assignment$ docker run --rm cs-docker-assignment lynx --version 2>&1
+Lynx Version 2.9.0dev.10 (11 Aug 2021)
+libwww-FM 2.14, SSL-MM 1.4.1, GNUTLS 3.7.1, ncurses 6.3.20211021(wide)
+Built on linux-gnu.
+
+Copyrights held by the Lynx Developers Group,
+the University of Kansas, CERN, and other contributors.
+Distributed under the GNU General Public License (Version 2).
+See https://lynx.invisible-island.net/ and the online help for more information.
+
+## Cloned Repo Directory Verification
+caffeine@fedora:~/docker_assignment$ docker run --rm cs-docker-assignment ls -la /workpace/xv6-public 2>&1
+ls: cannot access '/workpace/xv6-public': No such file or directory
+caffeine@fedora:~/docker_assignment$ docker run --rm cs-docker-assignment ls -la /workspace/xv6-public 2>&1
+total 556
+drwxr-xr-x. 1 root root  1460 Apr 27 12:35 .
+drwxr-xr-x. 1 root root    16 Apr 27 12:35 ..
+-rw-r--r--. 1 root root   130 Apr 27 12:35 .cvsignore
+-rw-r--r--. 1 root root    86 Apr 27 12:35 .dir-locals.el
+-rw-r--r--. 1 root root   682 Apr 27 12:35 .gdbinit.tmpl
+drwxr-xr-x. 1 root root   138 Apr 27 12:35 .git
+-rw-r--r--. 1 root root   118 Apr 27 12:35 .gitignore
+-rw-r--r--. 1 root root   128 Apr 27 12:35 BUGS
+-rw-r--r--. 1 root root  1174 Apr 27 12:35 LICENSE
+-rw-r--r--. 1 root root  8445 Apr 27 12:35 Makefile
+-rw-r--r--. 1 root root  4008 Apr 27 12:35 Notes
+-rw-r--r--. 1 root root  2286 Apr 27 12:35 README
+-rw-r--r--. 1 root root  4174 Apr 27 12:35 TRICKS
+-rw-r--r--. 1 root root   754 Apr 27 12:35 asm.h
+-rw-r--r--. 1 root root  3397 Apr 27 12:35 bio.c
+-rw-r--r--. 1 root root  2985 Apr 27 12:35 bootasm.S
+-rw-r--r--. 1 root root  2253 Apr 27 12:35 bootmain.c
+-rw-r--r--. 1 root root   326 Apr 27 12:35 buf.h
+-rw-r--r--. 1 root root   589 Apr 27 12:35 cat.c
+-rw-r--r--. 1 root root  5384 Apr 27 12:35 console.c
+-rwxr-xr-x. 1 root root   934 Apr 27 12:35 cuth
+-rw-r--r--. 1 root root   102 Apr 27 12:35 date.h
+-rw-r--r--. 1 root root  5540 Apr 27 12:35 defs.h
+-rwxr-xr-x. 1 root root 33514 Apr 27 12:35 dot-bochsrc
+-rw-r--r--. 1 root root   198 Apr 27 12:35 echo.c
+-rw-r--r--. 1 root root   755 Apr 27 12:35 elf.h
+-rw-r--r--. 1 root root  1832 Apr 27 12:35 entry.S
+-rw-r--r--. 1 root root  2762 Apr 27 12:35 entryother.S
+-rw-r--r--. 1 root root  2563 Apr 27 12:35 exec.c
+-rw-r--r--. 1 root root    96 Apr 27 12:35 fcntl.h
+-rw-r--r--. 1 root root  2816 Apr 27 12:35 file.c
+-rw-r--r--. 1 root root   802 Apr 27 12:35 file.h
+-rw-r--r--. 1 root root   764 Apr 27 12:35 forktest.c
+-rw-r--r--. 1 root root 15787 Apr 27 12:35 fs.c
+-rw-r--r--. 1 root root  1733 Apr 27 12:35 fs.h
+-rw-r--r--. 1 root root  5690 Apr 27 12:35 gdbutil
+-rw-r--r--. 1 root root  1954 Apr 27 12:35 grep.c
+-rw-r--r--. 1 root root  3613 Apr 27 12:35 ide.c
+-rw-r--r--. 1 root root   649 Apr 27 12:35 init.c
+-rw-r--r--. 1 root root   455 Apr 27 12:35 initcode.S
+-rw-r--r--. 1 root root  2047 Apr 27 12:35 ioapic.c
+-rw-r--r--. 1 root root  2160 Apr 27 12:35 kalloc.c
+-rw-r--r--. 1 root root   925 Apr 27 12:35 kbd.c
+-rw-r--r--. 1 root root  3535 Apr 27 12:35 kbd.h
+-rw-r--r--. 1 root root  1420 Apr 27 12:35 kernel.ld
+-rw-r--r--. 1 root root   232 Apr 27 12:35 kill.c
+-rw-r--r--. 1 root root  6098 Apr 27 12:35 lapic.c
+-rw-r--r--. 1 root root   264 Apr 27 12:35 ln.c
+-rw-r--r--. 1 root root  5654 Apr 27 12:35 log.c
+-rw-r--r--. 1 root root  1525 Apr 27 12:35 ls.c
+-rw-r--r--. 1 root root  3264 Apr 27 12:35 main.c
+-rw-r--r--. 1 root root  1231 Apr 27 12:35 memide.c
+-rw-r--r--. 1 root root   667 Apr 27 12:35 memlayout.h
+-rw-r--r--. 1 root root   327 Apr 27 12:35 mkdir.c
+-rw-r--r--. 1 root root  6140 Apr 27 12:35 mkfs.c
+-rw-r--r--. 1 root root  6571 Apr 27 12:35 mmu.h
+-rw-r--r--. 1 root root  3161 Apr 27 12:35 mp.c
+-rw-r--r--. 1 root root  2146 Apr 27 12:35 mp.h
+-rw-r--r--. 1 root root   760 Apr 27 12:35 param.h
+-rw-r--r--. 1 root root   426 Apr 27 12:35 picirq.c
+-rw-r--r--. 1 root root  2411 Apr 27 12:35 pipe.c
+-rwxr-xr-x. 1 root root   581 Apr 27 12:35 pr.pl
+-rw-r--r--. 1 root root  1472 Apr 27 12:35 printf.c
+-rwxr-xr-x. 1 root root   367 Apr 27 12:35 printpcs
+-rw-r--r--. 1 root root 11717 Apr 27 12:35 proc.c
+-rw-r--r--. 1 root root  2270 Apr 27 12:35 proc.h
+-rw-r--r--. 1 root root   322 Apr 27 12:35 rm.c
+-rwxr-xr-x. 1 root root  5042 Apr 27 12:35 runoff
+-rw-r--r--. 1 root root   628 Apr 27 12:35 runoff.list
+-rw-r--r--. 1 root root  2575 Apr 27 12:35 runoff.spec
+-rwxr-xr-x. 1 root root  2318 Apr 27 12:35 runoff1
+-rw-r--r--. 1 root root  8240 Apr 27 12:35 sh.c
+-rwxr-xr-x. 1 root root   135 Apr 27 12:35 show1
+-rwxr-xr-x. 1 root root   363 Apr 27 12:35 sign.pl
+-rw-r--r--. 1 root root  1990 Apr 27 12:35 sleep1.p
+-rw-r--r--. 1 root root   812 Apr 27 12:35 sleeplock.c
+-rw-r--r--. 1 root root   265 Apr 27 12:35 sleeplock.h
+-rw-r--r--. 1 root root  2791 Apr 27 12:35 spinlock.c
+-rw-r--r--. 1 root root   315 Apr 27 12:35 spinlock.h
+-rwxr-xr-x. 1 root root   240 Apr 27 12:35 spinp
+-rw-r--r--. 1 root root   294 Apr 27 12:35 stat.h
+-rw-r--r--. 1 root root  1028 Apr 27 12:35 stressfs.c
+-rw-r--r--. 1 root root  1441 Apr 27 12:35 string.c
+-rw-r--r--. 1 root root   542 Apr 27 12:35 swtch.S
+-rw-r--r--. 1 root root  3470 Apr 27 12:35 syscall.c
+-rw-r--r--. 1 root root   485 Apr 27 12:35 syscall.h
+-rw-r--r--. 1 root root  7377 Apr 27 12:35 sysfile.c
+-rw-r--r--. 1 root root  1099 Apr 27 12:35 sysproc.c
+-rw-r--r--. 1 root root   512 Apr 27 12:35 toc.ftr
+-rw-r--r--. 1 root root   290 Apr 27 12:35 toc.hdr
+-rw-r--r--. 1 root root  2657 Apr 27 12:35 trap.c
+-rw-r--r--. 1 root root   486 Apr 27 12:35 trapasm.S
+-rw-r--r--. 1 root root  1548 Apr 27 12:35 traps.h
+-rw-r--r--. 1 root root   110 Apr 27 12:35 types.h
+-rw-r--r--. 1 root root  1288 Apr 27 12:35 uart.c
+-rw-r--r--. 1 root root  1280 Apr 27 12:35 ulib.c
+-rw-r--r--. 1 root root  1652 Apr 27 12:35 umalloc.c
+-rw-r--r--. 1 root root   922 Apr 27 12:35 user.h
+-rw-r--r--. 1 root root 34697 Apr 27 12:35 usertests.c
+-rw-r--r--. 1 root root   461 Apr 27 12:35 usys.S
+-rwxr-xr-x. 1 root root   989 Apr 27 12:35 vectors.pl
+-rw-r--r--. 1 root root  9918 Apr 27 12:35 vm.c
+-rw-r--r--. 1 root root   820 Apr 27 12:35 wc.c
+-rw-r--r--. 1 root root  3269 Apr 27 12:35 x86.h
+-rw-r--r--. 1 root root   214 Apr 27 12:35 zombie.c
