@@ -1,0 +1,216 @@
+caffeine@fedora:~/operating-system/assignments/distributed-kv-assignment$ python3 chaos_test.py 
+
+=======================================================
+  TEST 1: Normal PUT/GET Operation
+=======================================================
+13:55:42 [node1] Node started on port 9001
+13:55:42 [node2] Node started on port 9002
+13:55:42 [node3] Node started on port 9003
+13:55:42 [node4] Node started on port 9004
+13:55:42 [node5] Node started on port 9005
+[CLUSTER] Starting 5-node cluster...
+13:55:44 [node4] Starting election for term 1
+13:55:44 [node4] Became LEADER for term 1
+[CLUSTER] Leader elected: node4
+
+── Cluster Status ──────────────────────────────
+  node1 | state=FOLLOWER  | term=1 | leader=node4
+  node2 | state=FOLLOWER  | term=1 | leader=node4
+  node3 | state=FOLLOWER  | term=1 | leader=node4
+  node4 | state=LEADER    | term=1 | leader=node4
+  node5 | state=FOLLOWER  | term=1 | leader=node4
+────────────────────────────────────────────────
+
+13:55:44 [node4] PUT 'key0'='value0' replicated to 2 backups. ACK sent.
+  PUT key0 = value0  ->  OK
+13:55:44 [node4] PUT 'key1'='value1' replicated to 2 backups. ACK sent.
+  PUT key1 = value1  ->  OK
+13:55:44 [node4] PUT 'key2'='value2' replicated to 2 backups. ACK sent.
+  PUT key2 = value2  ->  OK
+13:55:44 [node4] PUT 'key3'='value3' replicated to 2 backups. ACK sent.
+  PUT key3 = value3  ->  OK
+13:55:44 [node4] PUT 'key4'='value4' replicated to 2 backups. ACK sent.
+  PUT key4 = value4  ->  OK
+
+  GET key0  ->  'value0'  (vc={'node4': 1})
+  GET key1  ->  'value1'  (vc={'node4': 2})
+  GET key2  ->  'value2'  (vc={'node4': 3})
+  GET key3  ->  'value3'  (vc={'node4': 4})
+  GET key4  ->  'value4'  (vc={'node4': 5})
+13:55:44 [node1] Node stopped
+13:55:44 [node2] Node stopped
+13:55:44 [node3] Node stopped
+13:55:44 [node4] Node stopped
+13:55:44 [node5] Node stopped
+[CLUSTER] All nodes stopped
+
+[TEST 1] PASSED
+
+
+
+=======================================================
+  TEST 2: Node Kill — Leader Failure & Re-election
+=======================================================
+13:55:46 [node1] Node started on port 9001
+13:55:46 [node2] Node started on port 9002
+13:55:46 [node3] Node started on port 9003
+13:55:46 [node4] Node started on port 9004
+13:55:46 [node5] Node started on port 9005
+[CLUSTER] Starting 5-node cluster...
+13:55:48 [node1] Starting election for term 1
+13:55:48 [node1] Became LEADER for term 1
+[CLUSTER] Leader elected: node1
+13:55:48 [node1] PUT 'before_kill'='safe_value' replicated to 2 backups. ACK sent.
+
+  Leader before kill: node1
+13:55:48 [node1] Node stopped
+[CLUSTER] Node 'node1' killed
+  Killed node: node1
+  Waiting for re-election (up to 4 seconds)...
+13:55:50 [node4] Starting election for term 2
+13:55:50 [node4] Became LEADER for term 2
+  New leader elected: node1  ✓
+13:55:52 [node1] PUT 'after_kill' only replicated to 0 backups (degraded).
+  PUT after kill  ->  OK  ✓
+  GET before_kill ->  'safe_value'  ✓
+
+── Cluster Status ──────────────────────────────
+  node1 | STOPPED
+  node2 | state=FOLLOWER  | term=2 | leader=node4
+  node3 | state=FOLLOWER  | term=2 | leader=node4
+  node4 | state=LEADER    | term=2 | leader=node4
+  node5 | state=FOLLOWER  | term=2 | leader=node4
+────────────────────────────────────────────────
+
+13:55:52 [node1] Node stopped
+13:55:52 [node2] Node stopped
+13:55:52 [node3] Node stopped
+13:55:52 [node4] Node stopped
+13:55:52 [node5] Node stopped
+[CLUSTER] All nodes stopped
+[TEST 2] PASSED
+
+
+
+=======================================================
+  TEST 3: 500ms Network Latency — No False Elections
+=======================================================
+13:55:54 [node1] Node started on port 9001
+13:55:54 [node2] Node started on port 9002
+13:55:54 [node3] Node started on port 9003
+13:55:54 [node4] Node started on port 9004
+13:55:54 [node5] Node started on port 9005
+[CLUSTER] Starting 5-node cluster...
+13:55:56 [node3] Starting election for term 1
+13:55:56 [node2] Starting election for term 1
+13:55:56 [node4] Starting election for term 1
+13:55:57 [node5] Starting election for term 1
+13:55:58 [node3] Starting election for term 2
+13:55:58 [node2] Starting election for term 2
+13:55:59 [node4] Starting election for term 2
+13:55:59 [node5] Starting election for term 2
+[CLUSTER] Warning: no leader elected within timeout
+  Leader: None
+  Sleeping 4 seconds with 500ms latency on all messages...
+  (Heartbeat timeout is 1.5s–3.0s, so no election should trigger)
+13:56:00 [node2] Starting election for term 3
+13:56:01 [node3] Starting election for term 3
+13:56:01 [node4] Starting election for term 3
+13:56:01 [node5] Starting election for term 3
+13:56:03 [node2] Starting election for term 4
+  Leader after 4s: None
+  No false election triggered  ✓
+  PUT under latency -> FAIL  ✗
+13:56:03 [node1] Node stopped
+13:56:03 [node2] Node stopped
+13:56:03 [node3] Node stopped
+13:56:03 [node4] Node stopped
+13:56:03 [node5] Node stopped
+[CLUSTER] All nodes stopped
+[TEST 3] PASSED
+
+
+13:56:03 [node3] Starting election for term 4
+
+=======================================================
+  TEST 4: Performance Benchmarks
+=======================================================
+13:56:05 [node1] Node started on port 9001
+13:56:05 [node2] Node started on port 9002
+13:56:05 [node3] Node started on port 9003
+13:56:05 [node4] Node started on port 9004
+13:56:05 [node5] Node started on port 9005
+[CLUSTER] Starting 5-node cluster...
+13:56:07 [node2] Starting election for term 1
+13:56:07 [node2] Became LEADER for term 1
+[CLUSTER] Leader elected: node2
+13:56:08 [node2] PUT 'bench_key'='bench_value' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench0'='v0' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench1'='v1' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench2'='v2' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench3'='v3' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench4'='v4' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench5'='v5' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench6'='v6' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench7'='v7' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench8'='v8' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench9'='v9' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench10'='v10' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench11'='v11' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench12'='v12' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench13'='v13' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench14'='v14' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench15'='v15' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench16'='v16' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench17'='v17' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench18'='v18' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench19'='v19' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench20'='v20' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench21'='v21' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench22'='v22' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench23'='v23' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench24'='v24' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench25'='v25' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench26'='v26' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench27'='v27' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench28'='v28' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench29'='v29' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench30'='v30' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench31'='v31' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench32'='v32' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench33'='v33' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench34'='v34' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench35'='v35' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench36'='v36' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench37'='v37' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench38'='v38' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench39'='v39' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench40'='v40' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench41'='v41' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench42'='v42' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench43'='v43' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench44'='v44' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench45'='v45' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench46'='v46' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench47'='v47' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench48'='v48' replicated to 2 backups. ACK sent.
+13:56:08 [node2] PUT 'wbench49'='v49' replicated to 2 backups. ACK sent.
+
+  ┌──────────────────────────────────────────────────┐
+  │          Performance Metrics                     │
+  ├──────────────────────────────────────────────────┤
+  │  Read Latency  (single node)   :  0.001 ms/op    │
+  │  Read Latency  (distributed)   :  0.001 ms/op    │
+  │  Write Throughput              :  368.6 ops/sec  │
+  │  (with 2-backup replication)                     │
+  └──────────────────────────────────────────────────┘
+13:56:08 [node1] Node stopped
+13:56:08 [node2] Node stopped
+13:56:08 [node3] Node stopped
+13:56:08 [node4] Node stopped
+13:56:08 [node5] Node stopped
+[CLUSTER] All nodes stopped
+[TEST 4] DONE
+
+
+All chaos tests complete.
